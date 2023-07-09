@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import Header from '@/components/header'
+import Link from 'next/link';
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
@@ -21,11 +22,13 @@ export default function Home() {
             Contraseña
           <input type="password" name="Contraseña" ></input>
           </label>
+          <Link href="/paginaPrincipal">
           <button >
             <label>
               Entrar
             </label>
           </button>
+          </Link>
         </form>
         </div>
       </main>
