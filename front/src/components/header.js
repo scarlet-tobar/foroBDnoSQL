@@ -12,12 +12,9 @@ export default function Header() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <div className={`${styles.main} ${inter.className}`}>
-                <h1 className={styles.title}>
-                    Forito
+                <h1>
+                    Forito: Bienvenido al forito.
                 </h1>
-                <h2>
-                    Bienvenido al forito.
-                </h2>
             </div>
         </>
     )

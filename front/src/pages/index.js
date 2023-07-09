@@ -6,29 +6,31 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   return (
     <>
-      <Header/>
-      <main className={`${styles.main} ${inter.className}`}>
+      <Header />
+      <main className={`${styles.main},${inter.className}`}>
         <div>
           <h3>
             Inicia sesión
           </h3>
-        <form>
-          <label>
+        </div>
+        <div>
+        <form action="localhost:2000/inicioSesion" method='post' className={`${styles.form}`}>
+          <label for="correo">
             Correo
-          <input type="email" name="Correo" ></input>
+            <input type="email" name="correo" required ></input>
           </label>
-          <label>
+          <label for="password">
             Contraseña
-          <input type="password" name="Contraseña" ></input>
+            <input type="password" name="password" required ></input>
           </label>
-          <button >
+          <button type="submit">
             <label>
               Entrar
             </label>
           </button>
         </form>
-        </div>
-      </main>
+      </div>
+    </main >
     </>
   )
 }
