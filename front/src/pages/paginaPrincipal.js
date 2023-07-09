@@ -22,9 +22,29 @@ const posts = [
 const paginaPrincipal = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [newPost, setNewPost] = useState({ title: '', content: '', author: '', timestamp: '' });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPost((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handlePostSubmit = (e) => {
+    e.preventDefault();
+    if (newPost.title && newPost.content && newPost.author) {
+      newPost.id = posts.length + 1;
+      posts.push(newPost);
+      setNewPost({ title: '', content: '', author: '', timestamp: '' });
+      setSubmitted(true);
+    }
   };
 
   const filteredPosts = posts.filter((post) =>
@@ -32,11 +52,44 @@ const paginaPrincipal = () => {
     post.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
   return (
     <div>
       <h1>Forum</h1>
       <SearchBar onSearch={handleSearch} />
+
+      <h2>Create New Post</h2>
+      <form onSubmit={handlePostSubmit}>
+        <label htmlFor="postTitle">Title:</label>
+        <input
+          type="text"
+          id="postTitle"
+          name="title"
+          value={newPost.title}
+          onChange={handleInputChange}
+        />
+
+        <label htmlFor="postContent">Content:</label>
+        <textarea
+          id="postContent"
+          name="content"
+          value={newPost.content}
+          onChange={handleInputChange}
+        ></textarea>
+
+        <label htmlFor="postAuthor">Author:</label>
+        <input
+          type="text"
+          id="postAuthor"
+          name="author"
+          value={newPost.author}
+          onChange={handleInputChange}
+        />
+
+        <button type="submit">Post</button>
+      </form>
+
+      <h2>Posts</h2>
+      {submitted && <p>New post submitted!</p>}
       <ul>
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
