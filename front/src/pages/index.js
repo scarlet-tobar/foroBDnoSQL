@@ -8,12 +8,6 @@ export default function Home() {
     <>
       <Header/>
       <main className={`${styles.main} ${inter.className}`}>
-      <h1 className={styles.title}>
-        Forito
-      </h1>
-        <h2> 
-          Bienvenido al forito.
-        </h2>
         <div>
           <h3>
             Inicia sesión
@@ -33,7 +27,6 @@ export default function Home() {
             </label>
           </button>
         </form>
-
         </div>
       </main>
     </>
