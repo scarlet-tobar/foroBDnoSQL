@@ -1,25 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 
+const posts = [
+  {
+    id: 1,
+    title: 'Welcome to the Forum',
+    content: 'Hello everyone, welcome to our forum! Feel free to introduce yourself and start engaging in discussions.',
+    author: 'JohnDoe',
+    timestamp: '2023-07-04T10:30:00Z'
+  },
+  {
+    id: 2,
+    title: 'Tips for Productivity',
+    content: 'Do you have any tips or strategies for improving productivity? Share your insights and help others be more productive.',
+    author: 'JaneSmith',
+    timestamp: '2023-07-05T14:45:00Z'
+  },
+  // Add more posts as needed
+];
+
 const paginaPrincipal = () => {
-  // Mock forum posts data
-  const forumPosts = [
-    { id: 1, title: 'Post 1', content: 'Content of Post 1' },
-    { id: 2, title: 'Post 2', content: 'Content of Post 2' },
-    { id: 3, title: 'Post 3', content: 'Content of Post 3' },
-  ];
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.content.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
 
   return (
     <div>
       <h1>Forum</h1>
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       <ul>
-        {forumPosts.map((post) => (
-          <li key={post.id}>
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
-          </li>
-        ))}
+        {filteredPosts.length > 0 ? (
+          filteredPosts.map((post) => (
+            <li key={post.id}>
+              <h3>{post.title}</h3>
+              <p>{post.content}</p>
+              <p>Author: {post.author}</p>
+              <p>Timestamp: {post.timestamp}</p>
+            </li>
+          ))
+        ) : (
+          <p>No posts found matching the search term.</p>
+        )}
       </ul>
     </div>
   );
