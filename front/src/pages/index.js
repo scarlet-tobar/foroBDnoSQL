@@ -1,19 +1,12 @@
-import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-
+import Header from '@/components/header'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
     <>
-      <Head>
-        <title>Forito</title>
-        <meta name="description" content="Un foro básico puro texto" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Header/>
       <main className={`${styles.main} ${inter.className}`}>
       <h1 className={styles.title}>
         Forito
@@ -34,6 +27,11 @@ export default function Home() {
             Contraseña
           <input type="password" name="Contraseña" ></input>
           </label>
+          <button >
+            <label>
+              Entrar
+            </label>
+          </button>
         </form>
 
         </div>
