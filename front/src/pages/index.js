@@ -14,7 +14,7 @@ export default function Home() {
           </h3>
         </div>
         <div>
-        <form action="localhost:2000/inicioSesion" method='post' className={`${styles.form}`}>
+        <form className={`${styles.form}`}>
           <label for="email">
             Correo
             <input type="email" name="email" id='email' required ></input>
