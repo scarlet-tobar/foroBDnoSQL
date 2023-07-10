@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
+import Modal from 'react-modal';
 
 const posts = [
   {
@@ -20,10 +21,10 @@ const posts = [
 ];
 
 const paginaPrincipal = () => {
-
   const [searchTerm, setSearchTerm] = useState('');
   const [newPost, setNewPost] = useState({ title: '', content: '', author: '', timestamp: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -37,13 +38,20 @@ const paginaPrincipal = () => {
     }));
   };
 
+  const getCurrentTimestamp = () => {
+    const currentTimestamp = new Date().toISOString();
+    return currentTimestamp;
+  };
+
   const handlePostSubmit = (e) => {
     e.preventDefault();
     if (newPost.title && newPost.content && newPost.author) {
       newPost.id = posts.length + 1;
+      newPost.timestamp = getCurrentTimestamp();
       posts.push(newPost);
       setNewPost({ title: '', content: '', author: '', timestamp: '' });
       setSubmitted(true);
+      closeModal();
     }
   };
 
@@ -52,59 +60,106 @@ const paginaPrincipal = () => {
     post.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
   return (
-    <div>
-      <h1>Forum</h1>
-      <SearchBar onSearch={handleSearch} />
+    
+    <div style={{ display: 'flex' }}>
+      <div style={{ flex: 1 }}>
+        <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Forum</h1>
+        <SearchBar onSearch={handleSearch} />
 
-      <h2>Create New Post</h2>
-      <form onSubmit={handlePostSubmit}>
-        <label htmlFor="postTitle">Title:</label>
-        <input
-          type="text"
-          id="postTitle"
-          name="title"
-          value={newPost.title}
-          onChange={handleInputChange}
-        />
+        <button onClick={openModal} style={{ marginBottom: '20px' }}>
+          Create a new post
+        </button>
 
-        <label htmlFor="postContent">Content:</label>
-        <textarea
-          id="postContent"
-          name="content"
-          value={newPost.content}
-          onChange={handleInputChange}
-        ></textarea>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Create New Post"
+          style={{
+            overlay: {
+              backgroundColor: 'rgba(0, 0, 0, 0.5)'
+            },
+            content: {
+              width: '300px',
+              height: '300px',
+              margin: 'auto',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              padding: '20px'
+            }
+          }}
+        >
+          <h2>Create New Post</h2>
+          <form onSubmit={handlePostSubmit}>
+            <label htmlFor="postTitle">Title:</label>
+            <input
+              type="text"
+              id="postTitle"
+              name="title"
+              value={newPost.title}
+              onChange={handleInputChange}
+            />
 
-        <label htmlFor="postAuthor">Author:</label>
-        <input
-          type="text"
-          id="postAuthor"
-          name="author"
-          value={newPost.author}
-          onChange={handleInputChange}
-        />
+            <label htmlFor="postContent">Content:</label>
+            <textarea
+              id="postContent"
+              name="content"
+              value={newPost.content}
+              onChange={handleInputChange}
+            ></textarea>
 
-        <button type="submit">Post</button>
-      </form>
+            <label htmlFor="postAuthor">Author:</label>
+            <input
+              type="text"
+              id="postAuthor"
+              name="author"
+              value={newPost.author}
+              onChange={handleInputChange}
+            />
 
-      <h2>Posts</h2>
-      {submitted && <p>New post submitted!</p>}
-      <ul>
-        {filteredPosts.length > 0 ? (
-          filteredPosts.map((post) => (
-            <li key={post.id}>
-              <h3>{post.title}</h3>
-              <p>{post.content}</p>
-              <p>Author: {post.author}</p>
-              <p>Timestamp: {post.timestamp}</p>
-            </li>
-          ))
-        ) : (
-          <p>No posts found matching the search term.</p>
-        )}
-      </ul>
+            <button type="submit">Post</button>
+          </form>
+        </Modal>
+
+        <h2 style={{ fontSize: '20px', marginTop: '30px' }}>Posts</h2>
+        {submitted && <p>New post submitted!</p>}
+        <ul>
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+              <li key={post.id} style={{ marginBottom: '20px' }}>
+                <h3 style={{ fontSize: '18px', marginBottom: '10px' }}>{post.title}</h3>
+                <p style={{ marginBottom: '5px' }}>{post.content}</p>
+                <p style={{ marginBottom: '5px' }}>Author: {post.author}</p>
+                <p style={{ marginBottom: '5px' }}>Timestamp: {post.timestamp}</p>
+              </li>
+            ))
+          ) : (
+            <p>No posts found matching the search term.</p>
+          )}
+        </ul>
+      </div>
+      <div style={{ width: '20%', marginLeft: '20px' }}>
+      <h2>Sidebar</h2>
+        <ul>
+          <li>
+            <a href="/home">Friends</a>
+          </li>
+          <li>
+            <a href="/about">Communities</a>
+          </li>
+          <li>SignOut</li>
+        </ul>
+      </div>
     </div>
+    
   );
 };
 
