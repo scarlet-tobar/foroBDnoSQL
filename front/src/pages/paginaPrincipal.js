@@ -25,6 +25,7 @@ const paginaPrincipal = () => {
   const [newPost, setNewPost] = useState({ title: '', content: '', author: '', timestamp: '' });
   const [submitted, setSubmitted] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [updatedPosts, setUpdatedPosts] = useState({ title: '', content: '', author: '', timestamp: '' , likes: ''});
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -49,9 +50,20 @@ const paginaPrincipal = () => {
       newPost.id = posts.length + 1;
       newPost.timestamp = getCurrentTimestamp();
       posts.push(newPost);
-      setNewPost({ title: '', content: '', author: '', timestamp: '' });
+      setNewPost({ title: '', content: '', author: '', timestamp: '' , likes: 0});
       setSubmitted(true);
       closeModal();
+    }
+  };
+
+  const handleLike = (postId) => {
+    // Find the post with the given ID
+    const post = posts.find((post) => post.id === postId);
+    if (post) {
+      // Update the like count of the post
+      post.likes = post.likes + 1 || 1;
+      // Force a re-render by updating the state of posts
+      setUpdatedPosts([...posts]);
     }
   };
 
@@ -134,12 +146,13 @@ const paginaPrincipal = () => {
         <ul>
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
-              <li key={post.id} style={{ marginBottom: '20px' }}>
+              <div key={post.id} style={{ marginBottom: '20px' }}>
                 <h3 style={{ fontSize: '18px', marginBottom: '10px' }}>{post.title}</h3>
                 <p style={{ marginBottom: '5px' }}>{post.content}</p>
                 <p style={{ marginBottom: '5px' }}>Author: {post.author}</p>
                 <p style={{ marginBottom: '5px' }}>Timestamp: {post.timestamp}</p>
-              </li>
+                <button onClick={() => handleLike(post.id)}>Like ({post.likes || 0})</button>
+              </div>
             ))
           ) : (
             <p>No posts found matching the search term.</p>
