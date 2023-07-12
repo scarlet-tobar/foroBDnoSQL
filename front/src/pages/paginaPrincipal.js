@@ -2,34 +2,40 @@ import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import Modal from 'react-modal';
 
-const posts = [
-  {
-    id: 1,
-    title: 'Welcome to the Forum',
-    content: 'Hello everyone, welcome to our forum! Feel free to introduce yourself and start engaging in discussions.',
-    author: 'JohnDoe',
-    timestamp: '2023-07-04T10:30:00Z'
-  },
-  {
-    id: 2,
-    title: 'Tips for Productivity',
-    content: 'Do you have any tips or strategies for improving productivity? Share your insights and help others be more productive.',
-    author: 'JaneSmith',
-    timestamp: '2023-07-05T14:45:00Z'
-  },
-  // Add more posts as needed
-];
+import { gql } from "@apollo/client";
+import { useQuery } from '@apollo/client';
+
+const GET_POSTS = gql`
+    query posts{
+      posts
+      {
+        title
+        description
+        time
+      }
+    }
+`;
 
 const paginaPrincipal = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [newPost, setNewPost] = useState({ title: '', content: '', author: '', timestamp: '' });
+  const [newPost, setNewPost] = useState({ title: '', description: '', author: '', time: '' });
   const [submitted, setSubmitted] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [updatedPosts, setUpdatedPosts] = useState({ title: '', content: '', author: '', timestamp: '' , likes: ''});
+  const [updatedPosts, setUpdatedPosts] = useState({ title: '', description: '', author: '', time: '' , likes: ''});
 
   const handleSearch = (term) => {
     setSearchTerm(term);
   };
+
+  const { loading, error, data } = useQuery(GET_POSTS);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,18 +45,18 @@ const paginaPrincipal = () => {
     }));
   };
 
-  const getCurrentTimestamp = () => {
-    const currentTimestamp = new Date().toISOString();
-    return currentTimestamp;
+  const getCurrentTime = () => {
+    const currentTime = new Date().toISOString();
+    return currentTime;
   };
 
   const handlePostSubmit = (e) => {
     e.preventDefault();
-    if (newPost.title && newPost.content && newPost.author) {
-      newPost.id = posts.length + 1;
-      newPost.timestamp = getCurrentTimestamp();
+    if (newPost.title && newPost.description && newPost.author) {
+      newPost.id_ = posts.length + 1;
+      newPost.time = getCurrentTime();
       posts.push(newPost);
-      setNewPost({ title: '', content: '', author: '', timestamp: '' , likes: 0});
+      setNewPost({ title: '', description: '', author: '', time: '' , likes: 0});
       setSubmitted(true);
       closeModal();
     }
@@ -58,18 +64,18 @@ const paginaPrincipal = () => {
 
   const handleLike = (postId) => {
     // Find the post with the given ID
-    const post = posts.find((post) => post.id === postId);
+    const post = data.posts.find((post) => post.id_ === postId);
     if (post) {
       // Update the like count of the post
       post.likes = post.likes + 1 || 1;
       // Force a re-render by updating the state of posts
-      setUpdatedPosts([...posts]);
+      setUpdatedPosts([...data.posts]);
     }
   };
 
-  const filteredPosts = posts.filter((post) =>
+  const filteredPosts = data.posts.filter((post) =>
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    post.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const openModal = () => {
@@ -120,11 +126,11 @@ const paginaPrincipal = () => {
               onChange={handleInputChange}
             />
 
-            <label htmlFor="postContent">Content:</label>
+            <label htmlFor="postDescription">Description:</label>
             <textarea
-              id="postContent"
-              name="content"
-              value={newPost.content}
+              id="postDescription"
+              name="description"
+              value={newPost.description}
               onChange={handleInputChange}
             ></textarea>
 
@@ -146,12 +152,12 @@ const paginaPrincipal = () => {
         <ul>
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
-              <div key={post.id} style={{ marginBottom: '20px' }}>
+              <div key={post.id_} style={{ marginBottom: '20px' }}>
                 <h3 style={{ fontSize: '18px', marginBottom: '10px' }}>{post.title}</h3>
-                <p style={{ marginBottom: '5px' }}>{post.content}</p>
+                <p style={{ marginBottom: '5px' }}>{post.description}</p>
                 <p style={{ marginBottom: '5px' }}>Author: {post.author}</p>
-                <p style={{ marginBottom: '5px' }}>Timestamp: {post.timestamp}</p>
-                <button onClick={() => handleLike(post.id)}>Like ({post.likes || 0})</button>
+                <p style={{ marginBottom: '5px' }}>Time: {post.time}</p>
+                <button onClick={() => handleLike(post.id_)}>Like ({post.likes || 0})</button>
               </div>
             ))
           ) : (
