@@ -3,7 +3,7 @@ import SearchBar from '../components/SearchBar';
 import Modal from 'react-modal';
 
 import { gql } from "@apollo/client";
-import { useQuery } from '@apollo/client';
+import { useQuery , useMutation} from '@apollo/client';
 
 const GET_POSTS = gql`
     query posts{
@@ -16,62 +16,71 @@ const GET_POSTS = gql`
     }
 `;
 
+const ADD_POST = gql`
+  mutation CreatePost($title: String!, $description: String!, $tags: [TagInput!]!) {
+    createPost(input: {
+      title: $title
+      description: $description
+      tags: $tags
+    }) {
+      title
+      description
+      tags { name }
+    }
+  }
+`;
+
 const paginaPrincipal = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [newPost, setNewPost] = useState({ title: '', description: '', author: '', time: '' });
+  const [newPost, setNewPost] = useState({ title: '', description: '', tags: '', author: '' });
   const [submitted, setSubmitted] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [updatedPosts, setUpdatedPosts] = useState({ title: '', description: '', author: '', time: '' , likes: ''});
+  const [updatedPosts, setUpdatedPosts] = useState({ title: '', description: '', author: '', time: '' });
 
   const handleSearch = (term) => {
     setSearchTerm(term);
   };
 
   const { loading, error, data } = useQuery(GET_POSTS);
+  const [addPost, { loading: mutationLoading, error: mutationError }] = useMutation(ADD_POST, {
+    refetchQueries: [{ query: GET_POSTS }],
+  });
 
-  if (loading) {
+
+
+  if (loading || mutationLoading) {
     return <p>Loading...</p>;
   }
 
-  if (error) {
-    return <p>Error: {error.message}</p>;
+  if (error || mutationError) {
+    return <p>Error: {error ? error.message : mutationError.message}</p>;
   }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewPost((prevState) => ({
-      ...prevState,
-      [name]: value
-    }));
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setNewPost((prevPost) => ({ ...prevPost, [name]: value }));
   };
 
-  const getCurrentTime = () => {
-    const currentTime = new Date().toISOString();
-    return currentTime;
+  const handlePostSubmit = (event) => {
+    event.preventDefault();
+  
+    const tagsArray = newPost.tags.split(',').map((tag) => tag.trim());
+    const tags = tagsArray.map((tagName) => ({ name: tagName }));
+    console.log(newPost.title);
+    console.log(newPost.description);
+    console.log(tags);
+    addPost({
+      variables: {
+        title: newPost.title,
+        description: newPost.description,
+        tags: tags
+      },
+    });
+  
+    // Clear input fields after submission
+    setNewPost({ title: '', description: '', tags: '', author: '' });
   };
 
-  const handlePostSubmit = (e) => {
-    e.preventDefault();
-    if (newPost.title && newPost.description && newPost.author) {
-      newPost.id_ = posts.length + 1;
-      newPost.time = getCurrentTime();
-      posts.push(newPost);
-      setNewPost({ title: '', description: '', author: '', time: '' , likes: 0});
-      setSubmitted(true);
-      closeModal();
-    }
-  };
-
-  const handleLike = (postId) => {
-    // Find the post with the given ID
-    const post = data.posts.find((post) => post.id_ === postId);
-    if (post) {
-      // Update the like count of the post
-      post.likes = post.likes + 1 || 1;
-      // Force a re-render by updating the state of posts
-      setUpdatedPosts([...data.posts]);
-    }
-  };
 
   const filteredPosts = data.posts.filter((post) =>
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -116,7 +125,7 @@ const paginaPrincipal = () => {
           }}
         >
           <h2>Create New Post</h2>
-          <form onSubmit={handlePostSubmit}>
+            <form onSubmit={handlePostSubmit}>
             <label htmlFor="postTitle">Title:</label>
             <input
               type="text"
@@ -133,6 +142,15 @@ const paginaPrincipal = () => {
               value={newPost.description}
               onChange={handleInputChange}
             ></textarea>
+
+            <label htmlFor="postTags">Tags (comma-separated):</label>
+            <input
+              type="text"
+              id="postTags"
+              name="tags"
+              value={newPost.tags}
+              onChange={handleInputChange}
+            />
 
             <label htmlFor="postAuthor">Author:</label>
             <input
@@ -157,7 +175,6 @@ const paginaPrincipal = () => {
                 <p style={{ marginBottom: '5px' }}>{post.description}</p>
                 <p style={{ marginBottom: '5px' }}>Author: {post.author}</p>
                 <p style={{ marginBottom: '5px' }}>Time: {post.time}</p>
-                <button onClick={() => handleLike(post.id_)}>Like ({post.likes || 0})</button>
               </div>
             ))
           ) : (
