@@ -2,6 +2,15 @@ import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import Modal from 'react-modal';
 
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
 import { gql } from "@apollo/client";
 import { useQuery , useMutation} from '@apollo/client';
 
@@ -46,7 +55,9 @@ const paginaPrincipal = () => {
     refetchQueries: [{ query: GET_POSTS }],
   });
 
-
+  const handleVote = (postId, voteType) => {
+    // Logic to handle voting on a post
+  };
 
   if (loading || mutationLoading) {
     return <p>Loading...</p>;
@@ -96,15 +107,16 @@ const paginaPrincipal = () => {
   };
 
   return (
-    
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', gap: '20px' }}>
       <div style={{ flex: 1 }}>
-        <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Forum</h1>
+        <Typography variant="h4" style={{ marginBottom: '20px' }}>Forum</Typography>
         <SearchBar onSearch={handleSearch} />
 
-        <button onClick={openModal} style={{ marginBottom: '20px' }}>
-          Create a new post
-        </button>
+        <div style={{ marginBottom: '20px' }}>
+          <Button variant="contained" onClick={openModal}>
+            Create a new post
+          </Button>
+        </div>
 
         <Modal
           isOpen={modalIsOpen}
@@ -124,8 +136,8 @@ const paginaPrincipal = () => {
             }
           }}
         >
-          <h2>Create New Post</h2>
-            <form onSubmit={handlePostSubmit}>
+          <Typography variant="h6" style={{ marginBottom: '10px' }}>Create New Post</Typography>
+          <form onSubmit={handlePostSubmit}>
             <label htmlFor="postTitle">Title:</label>
             <input
               type="text"
@@ -133,6 +145,7 @@ const paginaPrincipal = () => {
               name="title"
               value={newPost.title}
               onChange={handleInputChange}
+              style={{ marginBottom: '10px' }}
             />
 
             <label htmlFor="postDescription">Description:</label>
@@ -141,6 +154,7 @@ const paginaPrincipal = () => {
               name="description"
               value={newPost.description}
               onChange={handleInputChange}
+              style={{ marginBottom: '10px' }}
             ></textarea>
 
             <label htmlFor="postTags">Tags (comma-separated):</label>
@@ -150,6 +164,7 @@ const paginaPrincipal = () => {
               name="tags"
               value={newPost.tags}
               onChange={handleInputChange}
+              style={{ marginBottom: '10px' }}
             />
 
             <label htmlFor="postAuthor">Author:</label>
@@ -159,23 +174,35 @@ const paginaPrincipal = () => {
               name="author"
               value={newPost.author}
               onChange={handleInputChange}
+              style={{ marginBottom: '10px' }}
             />
 
-            <button type="submit">Post</button>
+            <Button variant="contained" type="submit">Post</Button>
           </form>
         </Modal>
 
-        <h2 style={{ fontSize: '20px', marginTop: '30px' }}>Posts</h2>
+        <Typography variant="h5" style={{ marginTop: '30px' }}>Posts</Typography>
         {submitted && <p>New post submitted!</p>}
         <ul>
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
-              <div key={post.id_} style={{ marginBottom: '20px' }}>
-                <h3 style={{ fontSize: '18px', marginBottom: '10px' }}>{post.title}</h3>
-                <p style={{ marginBottom: '5px' }}>{post.description}</p>
-                <p style={{ marginBottom: '5px' }}>Author: {post.author}</p>
-                <p style={{ marginBottom: '5px' }}>Time: {post.time}</p>
-              </div>
+              <Card key={post.id_} style={{ marginBottom: '20px' }}>
+                <CardContent>
+                  <Typography variant="h6" style={{ marginBottom: '10px' }}>{post.title}</Typography>
+                  <Typography style={{ marginBottom: '5px' }}>{post.description}</Typography>
+                  <Typography style={{ marginBottom: '5px' }}>Author: {post.author}</Typography>
+                  <Typography style={{ marginBottom: '5px' }}>Time: {post.time}</Typography>
+                  <div>
+                    <IconButton onClick={() => handleVote(post.id_, 'upvote')}>
+                      <ThumbUpIcon />
+                    </IconButton>
+                    <Typography>{post.votes}</Typography>
+                    <IconButton onClick={() => handleVote(post.id_, 'downvote')}>
+                      <ThumbDownIcon />
+                    </IconButton>
+                  </div>
+                </CardContent>
+              </Card>
             ))
           ) : (
             <p>No posts found matching the search term.</p>
@@ -183,7 +210,7 @@ const paginaPrincipal = () => {
         </ul>
       </div>
       <div style={{ width: '20%', marginLeft: '20px' }}>
-      <h2>Sidebar</h2>
+        <Typography variant="h5">Sidebar</Typography>
         <ul>
           <li>
             <a href="/home">Friends</a>
@@ -195,7 +222,6 @@ const paginaPrincipal = () => {
         </ul>
       </div>
     </div>
-    
   );
 };
 

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,14 +15,17 @@ const SearchBar = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
+    <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center' }}>
+      <TextField
+        variant="outlined"
         placeholder="Search..."
         value={searchTerm}
         onChange={handleInputChange}
+        style={{ marginRight: '8px' }}
       />
-      <button type="submit">Search</button>
+      <Button variant="contained" type="submit">
+        Search
+      </Button>
     </form>
   );
 };
