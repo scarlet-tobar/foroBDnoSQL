@@ -41,6 +41,7 @@ const LoginPage = () => {
       // Si el email coincide, guardar en el localStorage y redirigir a index
       if (data.user.email === email) {
         localStorage.setItem('email', email);
+        localStorage.setItem('nickname', data.user.nickname)
         window.location.href = '/'; // Cambia '/index' por la ruta de tu página index
       } else {
         console.log('El email no coincide');
@@ -61,6 +62,7 @@ const LoginPage = () => {
       }}
     >
       <Container maxWidth="sm" style={{ backgroundColor: 'white', border: '1px solid blue', padding: '20px' }}>
+      <h2 style={{ textAlign: 'center' }}>Log In</h2>
         <form onSubmit={handleSubmit}>
           <TextField
             label="Email"
