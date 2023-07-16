@@ -19,6 +19,7 @@ const IndexPage = () => {
         createdby
         members {
           email
+          nickname
         }
         tags {
           name
