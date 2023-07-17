@@ -1,10 +1,13 @@
+// index.js
+
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Grid } from '@mui/material';
 import { ApolloClient, InMemoryCache, gql, ApolloProvider, useQuery } from '@apollo/client';
 import Navbar from '@/components/navbar';
-import QueryPostsByCommunity from '@/components/QueryPostsByCommunity';
+import QueryPostsByCommunity from '@/components/QueryPostsByCommunity'; // Importar el componente
 import PostsByCommunity from '@/components/PostsByCommunity';
 import CommunityList from '@/components/CommunityList';
+import FriendList from '@/components/friends';
 
 const IndexPage = () => {
   const [userEmail, setUserEmail] = useState('');
@@ -21,10 +24,7 @@ const IndexPage = () => {
         name
         description
         createdby
-        members {
-          email
-          nickname
-        }
+        members
         tags {
           name
         }
@@ -69,6 +69,9 @@ const IndexPage = () => {
           </Grid>
 
           <Grid item xs={3}>
+  
+            <FriendList/>
+
             <CommunityList communities={communities} />
           </Grid>
         </Grid>
