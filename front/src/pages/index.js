@@ -5,7 +5,6 @@ import { Container, Typography, Grid } from '@mui/material';
 import { ApolloClient, InMemoryCache, gql, ApolloProvider, useQuery } from '@apollo/client';
 import Navbar from '@/components/navbar';
 import QueryPostsByCommunity from '@/components/QueryPostsByCommunity'; // Importar el componente
-import PostsByCommunity from '@/components/PostsByCommunity';
 import CommunityList from '@/components/CommunityList';
 import FriendList from '@/components/friends';
 
@@ -64,7 +63,7 @@ const IndexPage = () => {
             ))}
 
             <div>
-              <PostsByCommunity communityName="General" />
+              <QueryPostsByCommunity communityName="General" />
             </div>
           </Grid>
 
