@@ -1,9 +1,12 @@
+// _app.js
+
 import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { useRouter } from 'next/router';
 import IndexPage from './index';
 import LoginPage from './login';
-import Search from './search'; // Importa el componente Search
+import Search from './search';
+import Community from './community/[communityName]';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -25,7 +28,17 @@ const App = ({ Component, pageProps }) => {
     const { term } = router.query;
     return (
       <ApolloProvider client={client}>
-        <Search term={term} /> {/* Pasa el término de búsqueda como prop */}
+        <Search term={term} />
+      </ApolloProvider>
+    );
+  }
+
+  // Agregamos la ruta para mostrar el componente Community
+  if (router.query.communityName) {
+    const { communityName } = router.query;
+    return (
+      <ApolloProvider client={client}>
+        <Community name={communityName} />
       </ApolloProvider>
     );
   }

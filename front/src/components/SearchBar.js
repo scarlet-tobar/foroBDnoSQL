@@ -67,9 +67,12 @@ const SearchBar = () => {
           placeholder="Search..."
           value={searchTerm}
           onChange={handleInputChange}
-          style={{ marginRight: '8px' }}
+          InputProps={{
+            style: { backgroundColor: 'white' }, // Change the background color here
+          }}
+          style={{ marginRight: '8px'}}
         />
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" style={{ backgroundColor: 'white', color: 'black'  }}>
           Search
         </Button>
       </form>
@@ -99,8 +102,8 @@ const SearchBar = () => {
       )}
     </div>
   );
-};
-
+            };
+          
 const SEARCH_COMMUNITIES = gql`
   query SearchCommunities($name: String!) {
     communities(name: $name) {
