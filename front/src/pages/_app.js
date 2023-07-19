@@ -8,6 +8,7 @@ import LoginPage from './login';
 import Search from './search';
 import Community from './community/[communityName]';
 import RegisterPage from './register';
+import UserProfile from './Profile/[userName]';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -46,6 +47,15 @@ const App = ({ Component, pageProps }) => {
     return (
       <ApolloProvider client={client}>
         <Community name={communityName} />
+      </ApolloProvider>
+    );
+  }
+
+  if (router.query.userName) {
+    const { userName } = router.query;
+    return (
+      <ApolloProvider client={client}>
+        <UserProfile name={userName} />
       </ApolloProvider>
     );
   }
