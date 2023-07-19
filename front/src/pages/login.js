@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button } from '@mui/material';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 
 const LoginPage = () => {
+  useEffect(() => {
+    // Obtener el email del usuario logeado desde el localStorage
+    const email = localStorage.getItem('email');
+    if (email){
+      window.location.href= '/';
+    }
+  }, []);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,6 +22,7 @@ const LoginPage = () => {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
