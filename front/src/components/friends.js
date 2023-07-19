@@ -32,7 +32,7 @@ const FriendList = () => {
 
   return (
     <div>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom sx={{marginTop: 2}}>
         Friends
       </Typography>
       <Box display="flex" flexDirection="column">

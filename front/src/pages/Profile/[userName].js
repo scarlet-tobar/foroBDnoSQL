@@ -1,4 +1,3 @@
-// Profile/[userName].js
 import React from 'react';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -50,6 +49,12 @@ const DECLINE_FRIEND_REQUEST_MUTATION = gql`
   }
 `;
 
+const DELETE_FRIEND_MUTATION = gql`
+  mutation DeleteFriend($userEmail: String!, $friendEmail: String!) {
+    deleteFriend(userEmail: $userEmail, friendEmail: $friendEmail)
+  }
+`;
+
 const Profile = () => {
   const router = useRouter();
   const { userName } = router.query;
@@ -58,8 +63,9 @@ const Profile = () => {
     variables: { nickname: userName },
   });
 
-  const [sendFriendRequest, { loading: mutationLoading, error: mutationError }] = useMutation(ADD_FRIEND_MUTATION);
+  const [sendFriendRequest, { loading: sendLoading, error: sendError }] = useMutation(ADD_FRIEND_MUTATION);
   const [declineFriendRequest, { loading: declineLoading, error: declineError }] = useMutation(DECLINE_FRIEND_REQUEST_MUTATION);
+  const [deleteFriend, { loading: deleteLoading, error: deleteError }] = useMutation(DELETE_FRIEND_MUTATION);
 
   const [sentFriendRequest, setSentFriendRequest] = React.useState(false);
   const [friendRequestExists, setFriendRequestExists] = React.useState(false);
@@ -96,6 +102,21 @@ const Profile = () => {
     });
     setFriendRequestDeclined(true);
     window.location.reload();
+  };
+
+  const handleDeleteFriend = async () => {
+    try {
+      await deleteFriend({
+        variables: {
+          userEmail: currentUserEmail,
+          friendEmail: userEmail,
+        },
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error('Error al borrar amigo:', error);
+      // Agregar lógica para manejar el error si es necesario
+    }
   };
 
   return (
@@ -138,21 +159,25 @@ const Profile = () => {
                 Friends: {userByNickname.friend.length}
               </Typography>
 
-              {!isFriend && !friendRequestExists && (
-                    <Button variant="contained" color="primary" onClick={handleAddFriend}>
-                        Agregar amigo
-                    </Button>
-                    )}
-
-              {friendRequestExists && (
-                <Button variant="contained" color="secondary" onClick={handleDeclineFriendRequest}>
-                  Decline Friend Request
+              {!isFriend && !friendRequestExists && userByNickname.email != localStorage.getItem("email") && (
+                <Button variant="contained" color="primary" onClick={handleAddFriend}>
+                  Agregar amigo
                 </Button>
               )}
-              
 
+              {friendRequestExists && userByNickname.email != localStorage.getItem("email") && (
+                <Button variant="contained" color="secondary" onClick={handleDeclineFriendRequest}>
+                  Solicitud de amistad enviada
+                </Button>
+              )}
+              {isFriend && userByNickname.email != localStorage.getItem("email") && (
+                <Button variant="contained" color="primary" onClick={handleDeleteFriend}>
+                  Borrar Amigo
+                </Button>
+              )}
             </Container>
             {isFriend && (<QueryPostsByUser userEmail={userEmail} />)}
+            {userByNickname.email == localStorage.getItem("email") && (<QueryPostsByUser userEmail={userEmail} />)}
           </Grid>
           <Grid item xs={3}>
             <FriendList />
