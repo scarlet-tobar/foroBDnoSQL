@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Select, MenuItem } from '@mui/material';
-import { ApolloClient, InMemoryCache, gql, useMutation } from '@apollo/client';
-
+import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
+import client from './_app';
 
 
 const RegisterPage = () => {
@@ -32,6 +32,12 @@ const RegisterPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+
+      const client = new ApolloClient({
+        uri: 'http://localhost:4000/graphql', // Cambia esto si tu servidor GraphQL se encuentra en otro lugar
+        cache: new InMemoryCache(),
+      });
+
       const CREATE_USER = gql`
       mutation userInput(
         $email: String!
@@ -50,17 +56,18 @@ const RegisterPage = () => {
           }
         ) {
             email
+            nickname
         }
       }
     `;
 
-      const [createUser, { data, loading, error }] = useMutation(CREATE_USER, { variables: { email, nickname, password, country, language } });
-      if (loading) return 'Submitting...';
+      const { data } = await client.mutate({
+        mutation: CREATE_USER,
+        variables: { email,nickname, password,country, language },
+      });
 
-      if (error) return `Submission error! ${error.message}`;
-      
       localStorage.setItem('email', email);
-      localStorage.setItem('nickname', data.user.nickname)
+      localStorage.setItem('nickname', nickname)
       window.location.href = '/'; // Cambia '/index' por la ruta de tu página index
     } catch (error) {
       // Manejo de errores
@@ -105,7 +112,7 @@ const RegisterPage = () => {
             value={password}
             onChange={handlePasswordChange}
           />
-          <label for="Country">Country</label>
+          <label>Country</label>
           <Select
             required
             label="Country"
