@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Typography, Button } from '@mui/material';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -49,9 +49,20 @@ const PostContainer = ({ post }) => {
     }
   `;
 
+  const USER_BY_EMAIL = gql`
+    query UserByEmail($email: String!) {
+      userByEmail(email: $email) {
+        nickname
+      }
+    }
+  `;
+
   const [addLikeToPost, { loading: likeLoading, error: likeError }] = useMutation(ADD_LIKE_TO_POST);
   const [addDislikeToPost, { loading: dislikeLoading, error: dislikeError }] = useMutation(ADD_DISLIKE_TO_POST);
   const [deletePost, { loading: deleteLoading, error: deleteError }] = useMutation(DELETE_POST);
+  const { data: userData, loading: userLoading, error: userError } = useQuery(USER_BY_EMAIL, {
+    variables: { email: post.author },
+  });
 
   const handleLikeClick = () => {
     const userEmail = localStorage.getItem('email');
@@ -110,6 +121,17 @@ const PostContainer = ({ post }) => {
   // Función para verificar si el usuario logueado es el autor del post
   const isCurrentUserAuthor = userEmail === post.author;
 
+  if (userLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (userError) {
+    console.error('Error fetching user data:', userError);
+    return <p>Error fetching user data</p>;
+  }
+
+  const userNickname = userData?.userByEmail?.nickname;
+
   return (
     <Container
       maxWidth="xl"
@@ -123,7 +145,7 @@ const PostContainer = ({ post }) => {
       <Typography variant="body1">Community: {post.community}</Typography>
       <Typography variant="h6">{post.title}</Typography>
       <Typography variant="body1">{post.description}</Typography>
-      <Typography variant="body2">Author: {post.author}</Typography>
+      <Typography variant="body2">Author: {userNickname}</Typography>
       <Typography variant="body2">Time: {post.time}</Typography>
       <Button variant="contained" color="primary" onClick={handleLikeClick} sx={{ marginRight: 2, marginTop: 2 }}>
         <ThumbUpIcon />

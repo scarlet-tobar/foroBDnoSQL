@@ -5,6 +5,14 @@ import { useRouter } from 'next/router';
 
 
 const LoginPage = () => {
+  useEffect(() => {
+    // Obtener el email del usuario logeado desde el localStorage
+    const email = localStorage.getItem('email');
+    if (email){
+      window.location.href= '/';
+    }
+  }, []);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
