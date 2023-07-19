@@ -7,6 +7,7 @@ import IndexPage from './index';
 import LoginPage from './login';
 import Search from './search';
 import Community from './community/[communityName]';
+import RegisterPage from './register';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -15,7 +16,13 @@ const client = new ApolloClient({
 
 const App = ({ Component, pageProps }) => {
   const router = useRouter();
-
+  if (router.pathname === '/register') {
+    return (
+      <ApolloProvider client={client}>
+        <RegisterPage />
+      </ApolloProvider>
+    );
+  }
   if (router.pathname === '/login') {
     return (
       <ApolloProvider client={client}>
