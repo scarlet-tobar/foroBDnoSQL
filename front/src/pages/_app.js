@@ -9,6 +9,7 @@ import Search from './search';
 import Community from './community/[communityName]';
 import RegisterPage from './register';
 import UserProfile from './Profile/[userName]';
+import Sugeridos from './sugeridos';
 
 
 const client = new ApolloClient({
@@ -38,6 +39,14 @@ const App = ({ Component, pageProps }) => {
     return (
       <ApolloProvider client={client}>
         <Search term={term} />
+      </ApolloProvider>
+    );
+  }
+
+  if (router.pathname === '/sugeridos') {
+    return (
+      <ApolloProvider client={client}>
+        <Sugeridos />
       </ApolloProvider>
     );
   }
