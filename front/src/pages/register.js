@@ -67,7 +67,7 @@ const RegisterPage = () => {
       });
 
       localStorage.setItem('email', email);
-      localStorage.setItem('nickname', nickname)
+      localStorage.setItem('nickname', nickname);
       window.location.href = '/'; // Cambia '/index' por la ruta de tu página index
     } catch (error) {
       // Manejo de errores

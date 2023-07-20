@@ -13,6 +13,8 @@ import Community from './community/[communityName]';
 import RegisterPage from './register';
 import UserProfile from './Profile/[userName]';
 import ErrorPage from './error'; // Importamos la página de error
+import Sugeridos from './sugeridos';
+
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -41,6 +43,14 @@ const App = ({ Component, pageProps }) => {
     return (
       <ApolloProvider client={client}>
         <Search term={term} />
+      </ApolloProvider>
+    );
+  }
+
+  if (router.pathname === '/sugeridos') {
+    return (
+      <ApolloProvider client={client}>
+        <Sugeridos />
       </ApolloProvider>
     );
   }
