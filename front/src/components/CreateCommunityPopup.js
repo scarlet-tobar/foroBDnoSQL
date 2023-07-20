@@ -25,6 +25,31 @@ import React, { useState } from 'react';
       }
     }
   `;
+
+const CREATE_COMMUNITY_N = gql`
+mutation CreateCommunity(
+  $name: String!
+  $description: String!
+  $createdby: String!
+  $tags: [String!]!
+) {
+  createCommNeo4j( commInput: {
+    name: $name
+    description: $description
+    createdby: $createdby
+    tags: $tags
+  }
+  ) {
+    name
+    description
+    createdby
+    members
+    tags {
+      name
+    }
+  }
+}
+`;
   
   const CreateCommunity = ({ userEmail }) => {
     const [open, setOpen] = useState(false);
@@ -37,6 +62,7 @@ import React, { useState } from 'react';
     };
   
     const [createCommunity] = useMutation(CREATE_COMMUNITY);
+    const [createCommunityN] = useMutation(CREATE_COMMUNITY_N);
   
     const handleCreateCommunity = () => {
       const tagsArray = tags.split(',').map((tag) => tag.trim());
