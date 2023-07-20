@@ -3,9 +3,9 @@ import { Typography, List, ListItem, ListItemText, Paper, Box } from '@mui/mater
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-const GET_COMMUNITIES = gql`
-  query GetCommunities {
-    communities {
+const GET_COMMUNITIES_BY_USER_EMAIL = gql`
+  query GetCommunitiesByUserEmail($email: String!) {
+    communitiesByUserEmail(email: $email) {
       name
       description
     }
@@ -14,12 +14,15 @@ const GET_COMMUNITIES = gql`
 
 const CommunityList = () => {
   const router = useRouter();
-  const { loading, error, data } = useQuery(GET_COMMUNITIES);
+  const userEmail = localStorage.getItem("email");
+  const { loading, error, data } = useQuery(GET_COMMUNITIES_BY_USER_EMAIL, {
+    variables: { email: userEmail },
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const communities = data.communities;
+  const communities = data.communitiesByUserEmail;
 
   const handleCommunityClick = (communityName) => {
     router.push(`/community/${encodeURIComponent(communityName)}`);
