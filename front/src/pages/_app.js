@@ -45,6 +45,14 @@ const App = ({ Component, pageProps }) => {
     );
   }
 
+  if (router.pathname === '/sugeridos') {
+    return (
+      <ApolloProvider client={client}>
+        <Sugeridos />
+      </ApolloProvider>
+    );
+  }
+
   // Agregamos la ruta para mostrar el componente Community
   if (router.query.communityName) {
     const { communityName } = router.query;
