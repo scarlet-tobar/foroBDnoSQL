@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
-import Navbar from '@/components/navbar';
 
 const ErrorContainer = styled(Container)({
   display: 'flex',
