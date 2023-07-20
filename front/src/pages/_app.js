@@ -12,6 +12,7 @@ import Search from './search';
 import Community from './community/[communityName]';
 import RegisterPage from './register';
 import UserProfile from './Profile/[userName]';
+import Sugeridos from './sugeridos';
 import ErrorPage from './error'; // Importamos la página de error
 
 const client = new ApolloClient({
