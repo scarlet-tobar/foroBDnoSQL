@@ -1,10 +1,10 @@
-// IndexPage.js
+// index.js
 
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Grid } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import Navbar from '@/components/navbar';
-import QueryPostsByCommunity from '@/components/QueryPostsByCommunity';
+import PostContainer from '@/components/PostContainer';
 import CommunityList from '@/components/CommunityList';
 import FriendList from '@/components/friends';
 import CreatePostPopup from '@/components/CreatePostPopup';
@@ -23,13 +23,36 @@ const GET_COMMUNITIES_BY_USER_EMAIL = gql`
   }
 `;
 
+const GET_ALL_POSTS = gql`
+  query GetAllPosts {
+    posts {
+      idPrimary
+      title
+      description
+      community
+      author
+      time
+      likes {
+        email
+      }
+      dislikes {
+        email
+      }
+    }
+  }
+`;
+
 const IndexPage = () => {
   const [userEmail, setUserEmail] = useState('');
   const [communities, setCommunities] = useState([]);
+  const [sortedPosts, setSortedPosts] = useState([]);
 
   useEffect(() => {
     // Obtener el email del usuario logeado desde el localStorage
     const email = localStorage.getItem('email');
+    if (!email){
+      window.location.href= '/login';
+    }
     setUserEmail(email);
   }, []);
 
@@ -37,14 +60,25 @@ const IndexPage = () => {
     variables: { email: userEmail },
   });
 
+  const { loading: postsLoading, error: postsError, data: postsData } = useQuery(GET_ALL_POSTS);
+
   useEffect(() => {
     if (!communityLoading && communityData) {
       setCommunities(communityData.communitiesByUserEmail);
     }
   }, [communityLoading, communityData]);
 
-  if (communityLoading) return <p>Loading...</p>;
-  if (communityError) return <p>Error: {communityError.message}</p>;
+  useEffect(() => {
+    if (!postsLoading && postsData) {
+      const allPosts = postsData.posts;
+      // Create a new copy of the array and sort by the "time" field in descending order
+      const sortedPosts = Array.from(allPosts).sort((a, b) => b.time.localeCompare(a.time));
+      setSortedPosts(sortedPosts);
+    }
+  }, [postsLoading, postsData]);
+
+  if (communityLoading || postsLoading) return <p>Loading...</p>;
+  if (communityError || postsError) return <p>Error: {communityError?.message || postsError?.message}</p>;
 
   return (
     <div>
@@ -61,13 +95,8 @@ const IndexPage = () => {
       >
         <Grid container spacing={2}>
           <Grid item xs={9}>
-          <div>
-              
-            </div>
-            {communities.map((community) => (
-              <div key={community.name}>
-                <QueryPostsByCommunity communityName={community.name} />
-              </div>
+            {sortedPosts.map((post) => (
+              <PostContainer key={post.idPrimary} post={post} />
             ))}
           </Grid>
           <Grid item xs={3}>

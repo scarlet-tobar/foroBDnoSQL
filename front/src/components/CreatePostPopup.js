@@ -70,6 +70,7 @@ const CreatePostPopup = ({ userEmail, communityName }) => {
 
     // Close the popup after adding the post
     setOpen(false);
+    window.location.reload();
   };
 
   return (
