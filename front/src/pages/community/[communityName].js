@@ -106,7 +106,7 @@ const Community = () => {
               <Typography variant="subtitle2" gutterBottom>
                 Tags: {community.tags.map((tag) => tag.name).join(", ")}
               </Typography>
-              {!community.members.includes(localStorage.getItem("email")) && (
+              {!community.members.includes(localStorage.getItem("email")) && communityName != "General" &&(
                 <Button variant="contained" onClick={handleJoinCommunity}>
                   Unirse
                 </Button>
@@ -119,6 +119,7 @@ const Community = () => {
             {community.members.includes(localStorage.getItem("email")) && (
               <QueryPostsByCommunity communityName={community.name} />
             )}
+            {communityName == "General" && !community.members.includes(localStorage.getItem("email")) && (<QueryPostsByCommunity communityName={community.name} />)}
           </Grid>
           <Grid item xs={3}>
             <FriendList />
