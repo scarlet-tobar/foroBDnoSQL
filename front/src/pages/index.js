@@ -8,6 +8,7 @@ import PostContainer from '@/components/PostContainer';
 import CommunityList from '@/components/CommunityList';
 import FriendList from '@/components/friends';
 import CreatePostPopup from '@/components/CreatePostPopup';
+import CreateCommunity from '@/components/CreateCommunityPopup';
 
 const GET_COMMUNITIES_BY_USER_EMAIL = gql`
   query GetCommunitiesByUserEmail($email: String!) {
@@ -100,7 +101,14 @@ const IndexPage = () => {
             ))}
           </Grid>
           <Grid item xs={3}>
-            <CreatePostPopup userEmail={userEmail}/>
+          <Grid container justifyContent="space-between" spacing={2}>
+          <Grid item>
+            <CreatePostPopup userEmail={userEmail} />
+          </Grid>
+          <Grid item>
+            <CreateCommunity userEmail={userEmail} />
+          </Grid>
+        </Grid>
             <FriendList />
             <CommunityList communities={communities} />
           </Grid>
