@@ -61,11 +61,37 @@ const RegisterPage = () => {
       }
     `;
 
+
+      const CREATE_USER_N = gql`
+      mutation userInput(
+        $email: String!
+        $nickname: String!
+        $password: String!
+        $country: String!
+        $language: String!
+      ) {
+        createUserNeo4j(
+          userInput: {
+            email: $email
+            nickname: $nickname
+            password: $password
+            country: $country
+            language: $language
+          }
+        ) {
+            email
+            nickname
+        }
+      }
+    `;
       const { data } = await client.mutate({
         mutation: CREATE_USER,
         variables: { email,nickname, password,country, language },
       });
-
+      const { data2 } = await client.mutate({
+        mutation: CREATE_USER_N,
+        variables: { email,nickname, password,country, language },
+      });
       localStorage.setItem('email', email);
       localStorage.setItem('nickname', nickname);
       window.location.href = '/'; // Cambia '/index' por la ruta de tu página index
