@@ -35,6 +35,7 @@ const ADD_MEMBER_TO_COMMUNITY = gql`
         name
       }
     }
+    addMemberNeo4j(email: $memberEmail, comm: $name)
   }
 `;
 

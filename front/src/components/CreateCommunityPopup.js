@@ -23,6 +23,15 @@ import React, { useState } from 'react';
           name
         }
       }
+      createCommNeo4j(commInput:{
+        name: $name
+        description: $description
+        author: $createdby
+        tag: $tags
+      }){
+        name
+        description
+      }
     }
   `;
 

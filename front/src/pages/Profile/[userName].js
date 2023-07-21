@@ -52,6 +52,7 @@ const DECLINE_FRIEND_REQUEST_MUTATION = gql`
 const DELETE_FRIEND_MUTATION = gql`
   mutation DeleteFriend($userEmail: String!, $friendEmail: String!) {
     deleteFriend(userEmail: $userEmail, friendEmail: $friendEmail)
+    removeFriendNeo4j(emailUser1: $userEmail, emailUser2: $friendEmail)
   }
 `;
 

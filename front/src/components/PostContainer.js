@@ -23,6 +23,7 @@ const PostContainer = ({ post }) => {
           email
         }
       }
+
     }
   `;
 
@@ -40,15 +41,16 @@ const PostContainer = ({ post }) => {
           email
         }
       }
+
     }
   `;
 
   const DELETE_POST = gql`
     mutation DeletePost($idPrimary: String!) {
       deletePost(idPrimary: $idPrimary)
+      deletePostNeo4j(postId: $idPrimary )
     }
   `;
-
   const USER_BY_EMAIL = gql`
     query UserByEmail($email: String!) {
       userByEmail(email: $email) {
