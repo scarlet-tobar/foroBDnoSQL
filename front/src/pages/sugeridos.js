@@ -1,15 +1,15 @@
 import Navbar from "@/components/navbar";
 import FriendList from "@/components/friends";
-import { Typography, Box, Paper, Grid , Container} from '@mui/material';
+import { Typography, Box, Paper, Grid , Container, ListItem, ListItemText} from '@mui/material';
 import { gql, useQuery } from "@apollo/client";
 import { React, useEffect, useState } from "react";
-import CreatePostPopup from '@/components/CreatePostPopup';
-import CommunityList from "@/components/CommunityList";
+import  { useRouter } from "next/router";
+
 
 
 
 const Sugeridos = () => {
-
+  const router= useRouter();
   const [userEmail, setUserEmail] = useState('');
   useEffect(() => {
     const email = localStorage.getItem('email');
@@ -66,7 +66,6 @@ const Sugeridos = () => {
             </Box>
           </Grid>
           <Grid item xs={3}>
-            <CreatePostPopup userEmail={userEmail} />
             <FriendList />
           </Grid>
         </Grid>
