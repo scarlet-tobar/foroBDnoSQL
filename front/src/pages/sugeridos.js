@@ -18,8 +18,8 @@ const Sugeridos = () => {
 
   const GET_SUGGESTED_USERS_1 = gql`
     query getFriends($email: String!){
-      getFriendsNeo4j(email: $email){
-          nickname
+      getCommFriendNeo4j(email: $email){
+          name
         }
     }`;
 
@@ -30,8 +30,10 @@ const Sugeridos = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const friends = data.getFriendsNeo4j;
-
+  const comm = data.getCommFriendNeo4j;
+  const handleCommunityClick = (communityName) => {
+    router.push(`/community/${encodeURIComponent(communityName)}`);
+  };
   return (
     <div>
       <Navbar />
@@ -51,13 +53,13 @@ const Sugeridos = () => {
 
             </div>
             <Typography variant="h6" gutterBottom>
-              Friends of Friends
+              Communities for you
             </Typography>
             <Box display="flex" flexDirection="column">
-              {friends.map((friend) => (
-                <Paper key={friend.nickname} elevation={2} sx={{ mb: 2, border: '1px solid blue' }}>
+              {comm.map((community) => (
+                <Paper key={community.name} onClick={() => handleCommunityClick(community.name)} elevation={2} sx={{ mb: 2, border: '1px solid blue' }}>
                   <ListItem>
-                    <ListItemText primary={friend.nickname} />
+                    <ListItemText primary={community.name}/>
                   </ListItem>
                 </Paper>
               ))}
