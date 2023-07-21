@@ -113,11 +113,12 @@ const Profile = () => {
           friendEmail: userEmail,
         },
       });
-      window.location.reload();
+      
     } catch (error) {
       console.error('Error al borrar amigo:', error);
       // Agregar lógica para manejar el error si es necesario
     }
+    window.location.reload();
   };
 
   return (

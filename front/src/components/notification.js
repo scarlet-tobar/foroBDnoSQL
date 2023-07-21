@@ -27,6 +27,7 @@ const ACCEPT_FRIEND_REQUEST = gql`
         nickname
       }
     }
+    addFriendNeo4j(emailUser1: $receiverEmail,emailUser2: $senderEmail)
   }
 `;
 

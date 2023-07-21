@@ -23,7 +23,10 @@ const PostContainer = ({ post }) => {
           email
         }
       }
-
+      addLikePostNeo4j(postId: $postId, email: $userEmail){
+        title
+        description
+      }
     }
   `;
 
@@ -41,7 +44,10 @@ const PostContainer = ({ post }) => {
           email
         }
       }
-
+      addDislikePostNeo4j(postId: $postId, email: $userEmail){
+        title
+        description
+      }
     }
   `;
 
