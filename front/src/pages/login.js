@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button } from '@mui/material';
+import React, { useState,useEffect } from 'react';
+import { Container, TextField, Button, Typography } from '@mui/material';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { useRouter } from 'next/router';
 
 
 const LoginPage = () => {
@@ -14,21 +15,24 @@ const LoginPage = () => {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const router = useRouter();
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
+    setError('');
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    setError('');
   };
-  
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const client = new ApolloClient({
-        uri: 'http://localhost:4000/graphql', // Cambia esto si tu servidor GraphQL se encuentra en otro lugar
+        uri: 'http://localhost:4000/graphql',
         cache: new InMemoryCache(),
       });
 
@@ -48,18 +52,19 @@ const LoginPage = () => {
         variables: { email, password },
       });
 
-      // Si el email coincide, guardar en el localStorage y redirigir a index
-      if (data.user.email === email) {
+      if (data.user && data.user.email === email) {
         localStorage.setItem('email', email);
-        localStorage.setItem('nickname', data.user.nickname)
-        window.location.href = '/'; // Cambia '/index' por la ruta de tu página index
-      } else {
-        console.log('El email no coincide');
-      }
+        localStorage.setItem('nickname', data.user.nickname);
+        window.location.href = '/';
+      } 
     } catch (error) {
-      // Manejo de errores
       console.error('Error:', error);
+      setError('Email or password are incorrect. Please try again.');
     }
+  };
+
+  const handleRegister = () => {
+    router.push('/register');
   };
 
   return (
@@ -71,8 +76,12 @@ const LoginPage = () => {
         height: '100vh',
       }}
     >
-      <Container maxWidth="sm" style={{ backgroundColor: 'white', border: '1px solid blue', padding: '20px' }}>
-      <h2 style={{ textAlign: 'center' }}>Log In</h2>
+      <Container
+        maxWidth="sm"
+        style={{ backgroundColor: 'white', border: '1px solid blue', padding: '20px' }}
+      >
+        <h2 style={{ textAlign: 'center' }}>Log In</h2>
+        {error && <Typography variant="body1" color="error" align="center">{error}</Typography>}
         <form onSubmit={handleSubmit}>
           <TextField
             label="Email"
@@ -91,9 +100,14 @@ const LoginPage = () => {
             value={password}
             onChange={handlePasswordChange}
           />
-          <Button type="submit" variant="contained" color="primary">
-            Sign In
-          </Button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+            <Button type="submit" variant="contained" color="primary">
+              Sign In
+            </Button>
+            <Button variant="text" color="primary" onClick={handleRegister}>
+              Register
+            </Button>
+          </div>
         </form>
       </Container>
     </div>
