@@ -10,7 +10,9 @@ import IndexPage from './index';
 import LoginPage from './login';
 import Search from './search';
 import Community from './community/[communityName]';
+import RegisterPage from './register';
 import UserProfile from './Profile/[userName]';
+import Sugeridos from './sugeridos';
 import ErrorPage from './error'; // Importamos la página de error
 
 const client = new ApolloClient({
@@ -20,7 +22,13 @@ const client = new ApolloClient({
 
 const App = ({ Component, pageProps }) => {
   const router = useRouter();
-
+  if (router.pathname === '/register') {
+    return (
+      <ApolloProvider client={client}>
+        <RegisterPage />
+      </ApolloProvider>
+    );
+  }
   if (router.pathname === '/login') {
     return (
       <ApolloProvider client={client}>
@@ -34,6 +42,14 @@ const App = ({ Component, pageProps }) => {
     return (
       <ApolloProvider client={client}>
         <Search term={term} />
+      </ApolloProvider>
+    );
+  }
+
+  if (router.pathname === '/sugeridos') {
+    return (
+      <ApolloProvider client={client}>
+        <Sugeridos />
       </ApolloProvider>
     );
   }

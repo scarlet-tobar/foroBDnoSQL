@@ -32,17 +32,22 @@ const Navbar = () => {
     <AppBar position="static" style={{ margin: 0 }}>
       <Toolbar>
         <Grid container alignItems="center">
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Link href="/">
               <Button color="inherit" onClick={handleHomeClick}>
                 <HomeIcon style={{ color: 'white' }} />
               </Button>
             </Link>
           </Grid>
-          <Grid item xs={4} sx={{ textAlign: 'center' }}>
+          <Grid item xs={1} sx={{ textAlign: 'center' }}>
+            <Button href="/sugeridos" color="inherit">
+              Sugeridos
+            </Button>
+          </Grid>
+          <Grid item xs={3} sx={{ textAlign: 'center' }}>
             <SearchBar />
           </Grid>
-          <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             <NotificationBell />
             <AccountBoxIcon
               sx={{ marginLeft: 2, marginRight: 2, cursor: 'pointer' }}
