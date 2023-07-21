@@ -1,6 +1,6 @@
 // CreatePostPopup.js
 
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { useMutation, gql } from '@apollo/client';
 
@@ -37,6 +37,31 @@ const CREATE_POST = gql`
     }
   }
 `;
+const CREATE_POST_NEO4J = gql`
+mutation createPostNeo4j(
+  $id: String!
+  $title: String!
+  $author: String
+  $description: String!
+  $comm: String
+  $tag: [TagInput]!
+) {
+  createPostNeo4j(
+    postInput: {
+      id: $id
+      title: $title
+      description: $description
+      author: $author
+      comm: $comm
+      tag: $tag
+    }
+  ) {
+    id
+    title
+    description
+  }
+}
+`;
 
 const CreatePostPopup = ({ userEmail, communityName }) => {
   const [open, setOpen] = useState(false);
@@ -49,11 +74,12 @@ const CreatePostPopup = ({ userEmail, communityName }) => {
   };
 
   const [createPost] = useMutation(CREATE_POST);
+  const [createPostNeo4j] = useMutation(CREATE_POST_NEO4J);
 
-  const handleCreatePost = () => {
+  const handleCreatePost = async () => {
     const tagsArray = tags.split(',').map((tag) => ({ name: tag.trim() }));
-
-    createPost({
+    try{
+    const { data } = await createPost({
       variables: {
         title,
         description,
@@ -63,6 +89,21 @@ const CreatePostPopup = ({ userEmail, communityName }) => {
       },
     });
 
+    const idPrimary = data.createPost.idPrimary;
+
+    await createPostNeo4j({
+      variables: {
+        id: idPrimary,
+        title,
+        description,
+        author: userEmail,
+        comm: communityName ? communityName : null,
+        tag: tagsArray,
+      },
+    });
+  }catch(error){
+
+  }
     // Clear the form after adding the post
     setTitle('');
     setDescription('');

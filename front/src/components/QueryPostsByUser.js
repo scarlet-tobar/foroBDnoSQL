@@ -1,7 +1,7 @@
 // QueryPostsByUser.js
 import React from 'react';
 import { gql, useQuery } from '@apollo/client';
-import PostContainer from '@/components/PostContainer';
+import PostContainer from './PostContainer';
 
 const QueryPostsByUser = ({ userEmail }) => {
   const GET_POSTS_BY_USER = gql`

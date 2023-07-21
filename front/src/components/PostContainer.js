@@ -23,6 +23,10 @@ const PostContainer = ({ post }) => {
           email
         }
       }
+      addLikePostNeo4j(postId: $postId, email: $userEmail){
+        title
+        description
+      }
     }
   `;
 
@@ -40,12 +44,17 @@ const PostContainer = ({ post }) => {
           email
         }
       }
+      addDislikePostNeo4j(postId: $postId, email: $userEmail){
+        title
+        description
+      }
     }
   `;
 
   const DELETE_POST = gql`
     mutation DeletePost($idPrimary: String!) {
       deletePost(idPrimary: $idPrimary)
+      deletePostNeo4j(postId: $idPrimary )
     }
   `;
 

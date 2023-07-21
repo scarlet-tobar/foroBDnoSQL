@@ -4,11 +4,11 @@ import React from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Typography, Button, Grid, Container } from "@mui/material";
 import { useRouter } from "next/router";
-import Navbar from "@/components/navbar";
-import FriendList from "@/components/friends";
-import CommunityList from "@/components/CommunityList";
-import QueryPostsByCommunity from "@/components/QueryPostsByCommunity";
-import CreatePostPopup from "@/components/CreatePostPopup"; // Import the CreatePostPopup component
+import Navbar from "../../components/navbar";
+import FriendList from "../../components/friends";
+import CommunityList from "../../components/CommunityList";
+import QueryPostsByCommunity from "../../components/QueryPostsByCommunity";
+import CreatePostPopup from "../../components/CreatePostPopup"; // Import the CreatePostPopup component
 
 const GET_COMMUNITY = gql`
   query GetCommunity($name: String!) {
@@ -35,6 +35,7 @@ const ADD_MEMBER_TO_COMMUNITY = gql`
         name
       }
     }
+    addMemberNeo4j(email: $memberEmail, comm: $name)
   }
 `;
 

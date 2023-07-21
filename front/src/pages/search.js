@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, gql } from '@apollo/client';
-import Navbar from '@/components/navbar';
-import PostContainer from '@/components/PostContainer';
-import CommunityList from '@/components/CommunityList';
+import Navbar from '../components/navbar';
+import PostContainer from '../components/PostContainer';
+import CommunityList from '../components/CommunityList';
 import { Container, Grid, Typography, Button } from '@mui/material';
-import FriendList from '@/components/friends';
+import FriendList from '../components/friends';
 import Community from './community/[communityName]';
 
 const GET_ALL_POSTS_QUERY = gql`

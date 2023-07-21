@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Grid } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
-import Navbar from '@/components/navbar';
-import PostContainer from '@/components/PostContainer';
-import CommunityList from '@/components/CommunityList';
-import FriendList from '@/components/friends';
-import CreatePostPopup from '@/components/CreatePostPopup';
-import CreateCommunity from '@/components/CreateCommunityPopup';
+import Navbar from '../components/navbar';
+import PostContainer from '../components/PostContainer';
+import CommunityList from '../components/CommunityList';
+import FriendList from '../components/friends';
+import CreatePostPopup from '../components/CreatePostPopup';
+import CreateCommunity from '../components/CreateCommunityPopup';
 
 const GET_COMMUNITIES_BY_USER_EMAIL = gql`
   query GetCommunitiesByUserEmail($email: String!) {

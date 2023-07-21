@@ -1,11 +1,11 @@
 import React from 'react';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import Navbar from '@/components/navbar';
+import Navbar from '../../components/navbar';
 import { Typography, Button, Grid, Container } from "@mui/material";
-import QueryPostsByUser from '@/components/QueryPostsByUser';
-import FriendList from "@/components/friends";
-import CommunityList from "@/components/CommunityList";
+import QueryPostsByUser from '../../components/QueryPostsByUser';
+import FriendList from "../../components/friends";
+import CommunityList from "../../components/CommunityList";
 
 const GET_USER_EMAIL = gql`
   query GetUserByEmail($nickname: String!) {
@@ -52,6 +52,7 @@ const DECLINE_FRIEND_REQUEST_MUTATION = gql`
 const DELETE_FRIEND_MUTATION = gql`
   mutation DeleteFriend($userEmail: String!, $friendEmail: String!) {
     deleteFriend(userEmail: $userEmail, friendEmail: $friendEmail)
+    removeFriendNeo4j(emailUser1: $userEmail, emailUser2: $friendEmail)
   }
 `;
 
