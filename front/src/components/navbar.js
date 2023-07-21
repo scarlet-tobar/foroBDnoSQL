@@ -40,9 +40,9 @@ const Navbar = () => {
             </Link>
           </Grid>
           <Grid item xs={1} sx={{ textAlign: 'center' }}>
-            <Link href="/sugeridos">
+            <Button href="/sugeridos" color="inherit">
               Sugeridos
-            </Link>
+            </Button>
           </Grid>
           <Grid item xs={3} sx={{ textAlign: 'center' }}>
             <SearchBar />
