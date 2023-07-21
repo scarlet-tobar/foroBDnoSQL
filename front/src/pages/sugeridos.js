@@ -4,8 +4,7 @@ import { Typography, Box, Paper, Grid , Container, ListItem, ListItemText} from 
 import { gql, useQuery } from "@apollo/client";
 import { React, useEffect, useState } from "react";
 import  { useRouter } from "next/router";
-
-
+import CommunityList from "@/components/CommunityList";
 
 
 const Sugeridos = () => {
@@ -21,16 +20,25 @@ const Sugeridos = () => {
       getCommFriendNeo4j(email: $email){
           name
         }
+      getFriendsNeo4j(email: $email){
+          nickname
+          email
+      }
     }`;
+
 
   const { loading, error, data } = useQuery(GET_SUGGESTED_USERS_1, {
     variables: { email: userEmail },
   });
 
+
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   const comm = data.getCommFriendNeo4j;
+  const user = data.getFriendsNeo4j;
+
   const handleCommunityClick = (communityName) => {
     router.push(`/community/${encodeURIComponent(communityName)}`);
   };
@@ -62,11 +70,26 @@ const Sugeridos = () => {
                     <ListItemText primary={community.name}/>
                   </ListItem>
                 </Paper>
+                
+              ))}
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Users for you
+            </Typography>
+            <Box display="flex" flexDirection="column">
+              {user.map((users) => (
+                <Paper key={users.nickname} onClick={() => handleCommunityClick(users.nickname)} elevation={2} sx={{ mb: 2, border: '1px solid blue' }}>
+                  <ListItem>
+                    <ListItemText primary={users.nickname}/>
+                  </ListItem>
+                </Paper>
+                
               ))}
             </Box>
           </Grid>
           <Grid item xs={3}>
             <FriendList />
+            <CommunityList/>
           </Grid>
         </Grid>
       </Container>
